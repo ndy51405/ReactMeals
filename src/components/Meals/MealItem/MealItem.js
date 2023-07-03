@@ -5,18 +5,17 @@ import CartContext from "../../../store/cart-context";
 
 const MealItem = (props) => {
   const cartContext = useContext(CartContext);
+  const price = `$${props.price.toFixed(2)}`;
 
-  const addItemHandler = (e) => {
-    e.preventDefault();
+  const addToCartHandler = amount => {
     const item = {
       id: props.id,
       name: props.name,
       price: props.price,
+      amount: amount,
     };
     cartContext.addItem(item);
   };
-
-  const price = `$${props.price.toFixed(2)}`;
 
   return (
     <li className={classes.meal}>
@@ -26,7 +25,7 @@ const MealItem = (props) => {
         <div className={classes.price}>{price}</div>
       </div>
       <div>
-        <MealItemForm id={props.id} onSubmit={addItemHandler} />
+        <MealItemForm id={props.id} onAddToCart={addToCartHandler} />
       </div>
     </li>
   );

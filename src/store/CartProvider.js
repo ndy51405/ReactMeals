@@ -1,27 +1,41 @@
+import { useReducer } from "react";
 import CartContext from "./cart-context";
 
+const cartInitialState = {
+  items: [],
+  totalAmount: 0,
+};
+
+// The place where actually manage the state of cart
+const cartReducer = (state, action) => {
+  switch (action.type) {
+    case 'ADD':
+      // Use concat() instead of push() to return a new array, keeping existing array(state.items) immutable
+      const updatedItems = state.items.concat(action.item); 
+      const updatedTotalAmount = state.totalAmount + action.item.price * action.item.amount;
+      return {items: updatedItems, totalAmount: updatedTotalAmount};
+    case 'REMOVE':
+      break;
+    default:
+      break;
+  }
+};
+
 const CartProvider = (props) => {
+  const [cart, dispatchCart] = useReducer(cartReducer, cartInitialState);
+
   const addItemToCartHandler = function (item) {
-    this.items.push(item);
-    this.totalAmount = this.items.reduce((current, item) => {
-      return current + item.price * item.amount;
-    }, 0);
-    console.log(this.items);
-    console.log(this.items.length);
-    console.log("total: " + this.totalAmount.toFixed(2));
+    dispatchCart({type: 'ADD', item: item});
   };
 
   const removeItemFromCartHandler = function (id) {
-    for (let i in this.items) {
-      if (this.items[i].id === id) {
-        this.items.splice(i, 1);
-      }
-    }
+    dispatchCart({type: 'REMOVE', id: id});
   };
 
+  // the actual object that should pass through context and accessed by components that need it
   const cartContext = {
-    items: [],
-    totalAmount: 0,
+    items: cart.items,
+    totalAmount: cart.totalAmount,
     addItem: addItemToCartHandler,
     removeItem: removeItemFromCartHandler,
   };
