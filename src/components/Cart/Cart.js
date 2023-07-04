@@ -11,9 +11,13 @@ const Cart = (props) => {
 
     const hasItems = cartContext.items.length > 0;
 
-    const cartItemRemoveHandler = (id) => {};
+    const cartItemRemoveHandler = (id) => {
+        cartContext.removeItem(id);
+    };
 
-    const cartItemAddHandler = (item) => {};
+    const cartItemAddHandler = (item) => {
+        cartContext.addItem({ ...item, amount: 1 }); // override amount to 1 to increment by 1 each time + is clicked
+    };
 
     const cartItems = (
         <ul className={classes['cart-items']}>
@@ -23,8 +27,8 @@ const Cart = (props) => {
                     name={item.name}
                     price={item.price}
                     amount={item.amount}
-                    onAdd={cartItemAddHandler}
-                    onRemove={cartItemRemoveHandler}
+                    onAdd={cartItemAddHandler.bind(null, item)} // override the default parameter of button onClick event
+                    onRemove={cartItemRemoveHandler.bind(null, item.id)} // override the default parameter of button onClick event
                 />
             ))}
         </ul>
